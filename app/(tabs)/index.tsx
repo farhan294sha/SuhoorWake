@@ -1,66 +1,96 @@
-import { Image, StyleSheet, Platform } from 'react-native';
-
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
+import { Dimensions, Pressable, StyleSheet, View } from "react-native";
+import { HelloWave } from "@/components/HelloWave";
+import { ThemedText } from "@/components/ThemedText";
+import { ThemedView } from "@/components/ThemedView";
+import { ScrollView } from "react-native";
+import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { Link } from "expo-router";
+import { ContainerView } from "@/components/ContainerView";
+import { AddAlarmButton } from "@/components/AddAlarm";
+import { AlarmList } from "@/components/AlarmList";
+import { IconSymbol } from "@/components/ui/IconSymbol";
+const { height } = Dimensions.get("window");
 
 export default function HomeScreen() {
+  const tabBarHeight = useBottomTabBarHeight();
+  const insets = useSafeAreaInsets();
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
+    <ContainerView
+      style={[
+        styles.topContainer,
+        {
+          paddingBottom: tabBarHeight + insets.bottom,
+        },
+      ]}
+    >
       <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12'
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
+        <View style={styles.titleContainer}>
+          <ThemedText type="title">Welcome! </ThemedText>
+          <HelloWave />
+        </View>
+        <ScrollView style={styles.scrollView}>
+          <ThemedView
+            style={{ height: height * 0.24, justifyContent: "center" }}
+          >
+            <ThemedText type="title">Upcoming Alarm</ThemedText>
+          </ThemedView>
+
+          {/* Alaram list */}
+          <AlarmList />
+          {/* for spacing in last alarm */}
+          <View style={{ height: 100 }}></View>
+        </ScrollView>
       </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          Tap the Explore tab to learn more about what's included in this starter app.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          When you're ready, run{' '}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+      <Link href="/createAlarm" asChild>
+        <Pressable
+          style={{
+            position: "absolute",
+            bottom: 32,
+            right: 20,
+            width: 56,
+            height: 56,
+          }}
+        >
+          <View
+            style={{
+              backgroundColor: "#d40202",
+              width: "100%",
+              height: "100%",
+              alignItems: "center",
+              justifyContent: "center",
+              borderRadius: 100,
+            }}
+          >
+            <IconSymbol size={32} name="plus.app.fill" color={"white"} />
+          </View>
+        </Pressable>
+        {/* <AddAlarmButton
+          style={{
+            position: "absolute",
+            bottom: 32,
+            right: 20,
+            width: 56,
+            height: 56,
+          }}
+        /> */}
+      </Link>
+    </ContainerView>
   );
 }
 
 const styles = StyleSheet.create({
   titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: 8,
+    margin: 8,
+  },
+  topContainer: {
+    position: "relative",
   },
   stepContainer: {
+    color: "white",
     gap: 8,
     marginBottom: 8,
   },
@@ -69,6 +99,9 @@ const styles = StyleSheet.create({
     width: 290,
     bottom: 0,
     left: 0,
-    position: 'absolute',
+    position: "absolute",
+  },
+  scrollView: {
+    paddingHorizontal: 10,
   },
 });
